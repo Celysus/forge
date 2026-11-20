@@ -357,12 +357,7 @@ public class RewardActor extends Actor implements Disposable, ImageFetcher.Callb
                         File frontFace = ImageKeys.getImageFile(card.getCardImageKey());
                         if (frontFace != null) {
                             try {
-                                Texture front = Forge.getAssets().manager().get(frontFace.getPath(), Texture.class, false);
-                                if (front == null) {
-                                    Forge.getAssets().manager().load(frontFace.getPath(), Texture.class, Forge.getAssets().getTextureFilter());
-                                    Forge.getAssets().manager().finishLoadingAsset(frontFace.getPath());
-                                    front = Forge.getAssets().manager().get(frontFace.getPath(), Texture.class, false);
-                                }
+                                Texture front = ImageCache.getInstance().getImage(card);
                                 if (front != null) {
                                     count += 1;
                                     setCardImage(front);
