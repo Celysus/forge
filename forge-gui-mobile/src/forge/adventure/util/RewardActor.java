@@ -110,7 +110,7 @@ public class RewardActor extends Actor implements Disposable, ImageFetcher.Callb
     private boolean isDragging = false;
     private boolean isNew = false;
     private boolean isAndroidorHasGamepad() {
-        return GuiBase.isAndroid() || Forge.hasGamepad();
+        return GuiBase.isMobile() || Forge.hasGamepad();
     }
     private int foilIndex;
     private boolean boosterTriggered = false;
