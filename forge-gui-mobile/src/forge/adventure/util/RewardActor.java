@@ -359,6 +359,7 @@ public class RewardActor extends Actor implements Disposable, ImageFetcher.Callb
                             try {
                                 Texture front = ImageCache.getInstance().getImage(card);
 								if (front == null) {
+									ImageCache.getInstance().getImage(card.getCardImageKey(), false);
 									ImageCache.getInstance().finishLoadingActiveQueue(frontFace.getPath());
 									front = ImageCache.getInstance().getImage(card);
 								}
