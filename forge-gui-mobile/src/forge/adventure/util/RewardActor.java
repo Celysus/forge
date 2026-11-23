@@ -729,14 +729,18 @@ public class RewardActor extends Actor implements Disposable, ImageFetcher.Callb
 
     private void updateBackFace(String key) {
         PaperCard cardBack = ImageUtil.getPaperCardFromImageKey(key);
-        File backFace = ImageKeys.getImageFile(cardBack.getCardAltImageKey());
+		String backFaceKey = cardBack.getCardAltImageKey();
+        File backFace = ImageKeys.getImageFile(backFaceKey);
         if (backFace != null) {
             try {
-                Texture back = Forge.getAssets().manager().get(backFace.getPath(), Texture.class, false);
+                // Texture back = Forge.getAssets().manager().get(backFace.getPath(), Texture.class, false);
+				Texture back = ImageCache.getInstance().getImage(backFaceKey, false);
                 if (back == null) {
-                    Forge.getAssets().manager().load(backFace.getPath(), Texture.class, Forge.getAssets().getTextureFilter());
-                    Forge.getAssets().manager().finishLoadingAsset(backFace.getPath());
-                    back = Forge.getAssets().manager().get(backFace.getPath(), Texture.class, false);
+                    // Forge.getAssets().manager().load(backFace.getPath(), Texture.class, Forge.getAssets().getTextureFilter());
+                    // Forge.getAssets().manager().finishLoadingAsset(backFace.getPath());
+                    // back = Forge.getAssets().manager().get(backFace.getPath(), Texture.class, false);
+					ImageCache.getInstance().finishLoadingActiveQueue(cardBack.getPath());
+					back = ImageCache.getInstance().getImage(backFaceKey, false);
                 }
                 if (back != null) {
                     ImageCache.getInstance().updateSynqCount(backFace, 1);
