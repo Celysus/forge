@@ -34,6 +34,7 @@ import forge.Graphics;
 import forge.assets.FSkinColor;
 import forge.assets.FSkinFont;
 import forge.assets.FSkinImage;
+import forge.card.CardZoom;
 import forge.card.CardZoom.ActivateHandler;
 import forge.gui.FThreads;
 import forge.item.InventoryItem;
@@ -1064,6 +1065,11 @@ public abstract class ItemManager<T extends InventoryItem> extends FContainer im
             if (contextMenu == null) {
                 contextMenu = new ContextMenu();
             }
+
+            // CardZoom is still the top overlay during its close animation. Keep the
+            // context menu on the screen so it remains visible after the zoom closes.
+            contextMenu.setDropDownContainer(CardZoom.isOpen() ? Forge.getCurrentScreen() : null);
+
             if (delay) { //delay showing menu to prevent it hiding right away
                 final Object delayObj = new Object();
                 this.menuDelayCancel = delayObj;
