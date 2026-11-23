@@ -739,7 +739,7 @@ public class RewardActor extends Actor implements Disposable, ImageFetcher.Callb
                     // Forge.getAssets().manager().load(backFace.getPath(), Texture.class, Forge.getAssets().getTextureFilter());
                     // Forge.getAssets().manager().finishLoadingAsset(backFace.getPath());
                     // back = Forge.getAssets().manager().get(backFace.getPath(), Texture.class, false);
-					ImageCache.getInstance().finishLoadingActiveQueue(cardBack.getPath());
+					ImageCache.getInstance().finishLoadingActiveQueue(backFace.getPath());
 					back = ImageCache.getInstance().getImage(backFaceKey, false);
                 }
                 if (back != null) {
