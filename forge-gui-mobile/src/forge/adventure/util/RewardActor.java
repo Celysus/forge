@@ -198,7 +198,7 @@ public class RewardActor extends Actor implements Disposable, ImageFetcher.Callb
 
             final String filePath = imageFile.getPath();
             // Texture replacement = Forge.getAssets().manager().get(filePath, Texture.class, false);
-			Texture replacement = ImageCache.getInstance().getImage(imageKey);
+			Texture replacement = ImageCache.getInstance().getImage(imageKey, false);
 
             // Queue the texture non-blocking if it isn't ready in memory yet
             if (replacement == null) {
@@ -235,7 +235,7 @@ public class RewardActor extends Actor implements Disposable, ImageFetcher.Callb
 
             final String filePath = imageFile.getPath();
             // Texture t = Forge.getAssets().manager().get(filePath, Texture.class, false);
-			Texture t = ImageCache.getInstance().getImage(imageKey);
+			Texture t = ImageCache.getInstance().getImage(imageKey, false, true);
 
             if (t == null) {
                 Sprite backSprite = Config.instance().getItemSprite("CardBack");
@@ -397,7 +397,6 @@ public class RewardActor extends Actor implements Disposable, ImageFetcher.Callb
                                 // Forge.getAssets().manager().load(lookup.getPath(), Texture.class, Forge.getAssets().getTextureFilter());
                                 // Forge.getAssets().manager().finishLoadingAsset(lookup.getPath());
                                 // replacement = Forge.getAssets().manager().get(lookup.getPath(), Texture.class, false);
-								ImageCache.getInstance().getImage(c.getCardImageKey(), false);
 								ImageCache.getInstance().finishLoadingActiveQueue(imagePath);
 								replacement = ImageCache.getInstance().getImage(c);
                             }
