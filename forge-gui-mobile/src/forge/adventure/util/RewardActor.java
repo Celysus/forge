@@ -110,7 +110,7 @@ public class RewardActor extends Actor implements Disposable, ImageFetcher.Callb
     private boolean isDragging = false;
     private boolean isNew = false;
     private boolean isAndroidorHasGamepad() {
-        return GuiBase.isAndroid() || Forge.hasGamepad();
+        return GuiBase.isMobile() || Forge.hasGamepad();
     }
     private int foilIndex;
     private boolean boosterTriggered = false;
@@ -197,7 +197,8 @@ public class RewardActor extends Actor implements Disposable, ImageFetcher.Callb
                 return;
 
             final String filePath = imageFile.getPath();
-            Texture replacement = Forge.getAssets().manager().get(filePath, Texture.class, false);
+            // Texture replacement = Forge.getAssets().manager().get(filePath, Texture.class, false);
+			Texture replacement = ImageCache.getInstance().getImage(imageKey);
 
             // Queue the texture non-blocking if it isn't ready in memory yet
             if (replacement == null) {
@@ -208,6 +209,8 @@ public class RewardActor extends Actor implements Disposable, ImageFetcher.Callb
                         }
                     }
                 } catch (Exception ignored) {}
+				// Above ImageCache call should queue the image. 
+				// Leaving asset manager call here as it should be harmless on iOS if innefective
                 return;
             }
 
@@ -231,7 +234,8 @@ public class RewardActor extends Actor implements Disposable, ImageFetcher.Callb
             if (imageFile == null || !imageFile.exists()) return;
 
             final String filePath = imageFile.getPath();
-            Texture t = Forge.getAssets().manager().get(filePath, Texture.class, false);
+            // Texture t = Forge.getAssets().manager().get(filePath, Texture.class, false);
+			Texture t = ImageCache.getInstance().getImage(imageKey);
 
             if (t == null) {
                 Sprite backSprite = Config.instance().getItemSprite("CardBack");
@@ -357,12 +361,11 @@ public class RewardActor extends Actor implements Disposable, ImageFetcher.Callb
                         File frontFace = ImageKeys.getImageFile(card.getCardImageKey());
                         if (frontFace != null) {
                             try {
-                                Texture front = Forge.getAssets().manager().get(frontFace.getPath(), Texture.class, false);
-                                if (front == null) {
-                                    Forge.getAssets().manager().load(frontFace.getPath(), Texture.class, Forge.getAssets().getTextureFilter());
-                                    Forge.getAssets().manager().finishLoadingAsset(frontFace.getPath());
-                                    front = Forge.getAssets().manager().get(frontFace.getPath(), Texture.class, false);
-                                }
+                                Texture front = ImageCache.getInstance().getImage(card);
+								if (front == null) {
+									ImageCache.getInstance().finishLoadingActiveQueue(frontFace.getPath());
+									front = ImageCache.getInstance().getImage(card);
+								}
                                 if (front != null) {
                                     count += 1;
                                     setCardImage(front);
@@ -387,11 +390,16 @@ public class RewardActor extends Actor implements Disposable, ImageFetcher.Callb
                     int count = 0;
                     if (lookup != null && !Forge.enableUIMask.equals("Art")) {
                         try {
-                            Texture replacement = Forge.getAssets().manager().get(lookup.getPath(), Texture.class, false);
+							PaperCard c = reward.getCard();
+                            // Texture replacement = Forge.getAssets().manager().get(lookup.getPath(), Texture.class, false);
+							Texture replacement = ImageCache.getInstance().getImage(c);
                             if (replacement == null) {
-                                Forge.getAssets().manager().load(lookup.getPath(), Texture.class, Forge.getAssets().getTextureFilter());
-                                Forge.getAssets().manager().finishLoadingAsset(lookup.getPath());
-                                replacement = Forge.getAssets().manager().get(lookup.getPath(), Texture.class, false);
+                                // Forge.getAssets().manager().load(lookup.getPath(), Texture.class, Forge.getAssets().getTextureFilter());
+                                // Forge.getAssets().manager().finishLoadingAsset(lookup.getPath());
+                                // replacement = Forge.getAssets().manager().get(lookup.getPath(), Texture.class, false);
+								ImageCache.getInstance().getImage(c.getCardImageKey(), false);
+								ImageCache.getInstance().finishLoadingActiveQueue(imagePath);
+								replacement = ImageCache.getInstance().getImage(c);
                             }
                             if (replacement != null) {
                                 count += 1;
@@ -519,7 +527,8 @@ public class RewardActor extends Actor implements Disposable, ImageFetcher.Callb
                     File packFile = ImageKeys.getImageFile(imageKey);
                     if (packFile != null && packFile.exists()) {
                         final String packPath = packFile.getPath();
-                        t = Forge.getAssets().manager().get(packPath, Texture.class, false);
+                        // t = Forge.getAssets().manager().get(packPath, Texture.class, false);
+						t = ImageCache.getInstance().getImage(imageKey, false, true);
                         if (t == null) {
                             try {
                                 if (!Forge.getAssets().manager().contains(packPath))
@@ -1208,7 +1217,8 @@ public class RewardActor extends Actor implements Disposable, ImageFetcher.Callb
                     renderDeckReward();
             }
             if (pendingPackImagePath != null) {
-                Texture packTexture = Forge.getAssets().manager().get(pendingPackImagePath, Texture.class, false);
+                // Texture packTexture = Forge.getAssets().manager().get(pendingPackImagePath, Texture.class, false);
+				Texture packTexture = ImageCache.getInstance().getImage(imageKey, false, true);
                 if (packTexture != null) {
                     pendingPackImagePath = null;
                     applyPackTexture(packTexture);
